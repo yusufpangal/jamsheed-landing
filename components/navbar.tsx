@@ -1,5 +1,8 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export function Navbar() {
   return (
@@ -28,8 +31,9 @@ export function Navbar() {
         </div>
 
         {/* CTA Buttons */}
-        <div className="flex items-center space-x-4">
-          <Link href="/dashboard">
+        <div className="flex items-center space-x-2 md:space-x-4">
+          <ThemeToggle />
+          <Link href="/dashboard" className="hidden sm:block">
             <Button variant="ghost" size="sm">Sign In</Button>
           </Link>
           <Link href="/pricing">
