@@ -11,13 +11,20 @@ import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 
 interface LicenseData {
-  license_key: string
-  user_email: string
-  tier: string
+  key: string
   status: string
-  tokens_used: number
-  tokens_limit: number
-  period_end: string
+  expires_at: string | null
+}
+
+interface SubscriptionData {
+  plan_id: string
+  status: string
+  current_period_end: string
+}
+
+interface PlanFeatures {
+  maxTokens: number
+  models: string[]
 }
 
 export default function DashboardPage() {
@@ -25,6 +32,8 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [licenseData, setLicenseData] = useState<LicenseData | null>(null)
+  const [subscriptionData, setSubscriptionData] = useState<SubscriptionData | null>(null)
+  const [planName, setPlanName] = useState('Free')
 
   useEffect(() => {
     // Check authentication and load license data
@@ -38,17 +47,32 @@ export default function DashboardPage() {
 
       setUser(session.user)
 
-      // Fetch license data from Supabase
-      const { data: license, error } = await supabase
-        .from('licenses')
-        .select('license_key, user_email, tier, status, tokens_used, tokens_limit, period_end')
-        .eq('user_email', session.user.email)
+      // Fetch license key data from Supabase
+      const { data: license, error: licenseError } = await supabase
+        .from('license_keys')
+        .select('key, status, expires_at')
+        .eq('user_id', session.user.id)
         .single()
 
       if (license) {
         setLicenseData(license)
-      } else if (error) {
-        console.error('Error fetching license:', error)
+      } else if (licenseError) {
+        console.log('No license key found:', licenseError)
+      }
+
+      // Fetch subscription data
+      const { data: subscription, error: subError } = await supabase
+        .from('subscriptions')
+        .select('plan_id, status, current_period_end, pricing_plans(name, features)')
+        .eq('user_id', session.user.id)
+        .single()
+
+      if (subscription) {
+        setSubscriptionData(subscription)
+        // @ts-ignore - Supabase nested select
+        setPlanName(subscription.pricing_plans?.name || 'Free')
+      } else if (subError) {
+        console.log('No subscription found:', subError)
       }
 
       setLoading(false)
@@ -81,19 +105,19 @@ export default function DashboardPage() {
   }
 
   // Use real data if available, otherwise show default free tier
-  const subscription = licenseData ? {
-    plan: licenseData.tier.charAt(0).toUpperCase() + licenseData.tier.slice(1),
-    status: licenseData.status,
-    tokensUsed: licenseData.tokens_used || 0,
-    tokensLimit: licenseData.tokens_limit || 50000,
-    periodEnd: new Date(licenseData.period_end).toLocaleDateString('en-US', {
+  const subscription = subscriptionData ? {
+    plan: planName,
+    status: subscriptionData.status,
+    tokensUsed: 0, // TODO: Get from usage_logs aggregation
+    tokensLimit: 50000, // TODO: Get from plan features
+    periodEnd: new Date(subscriptionData.current_period_end).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric'
     }),
   } : {
     plan: 'Free',
-    status: 'inactive',
+    status: licenseData?.status || 'inactive',
     tokensUsed: 0,
     tokensLimit: 50000,
     periodEnd: 'Not activated',

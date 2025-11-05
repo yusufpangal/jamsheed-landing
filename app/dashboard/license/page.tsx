@@ -9,7 +9,7 @@ import { Copy, Check, Key, Laptop } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 interface LicenseData {
-  license_key: string
+  key: string
   status: string
   device_name: string | null
   created_at: string
@@ -30,11 +30,11 @@ export default function LicenseKeyPage() {
         return
       }
 
-      // Fetch license data
+      // Fetch license data from license_keys table
       const { data, error } = await supabase
-        .from('licenses')
-        .select('license_key, status, device_name, created_at')
-        .eq('user_email', session.user.email)
+        .from('license_keys')
+        .select('key, status, device_name, created_at')
+        .eq('user_id', session.user.id)
         .single()
 
       if (data) {
@@ -76,7 +76,7 @@ export default function LicenseKeyPage() {
   }
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(license.license_key)
+    navigator.clipboard.writeText(license.key)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -109,7 +109,7 @@ export default function LicenseKeyPage() {
         </div>
 
         <div className="bg-muted p-4 rounded-lg flex items-center justify-between mb-4">
-          <code className="text-lg font-mono">{license.license_key}</code>
+          <code className="text-lg font-mono">{license.key}</code>
           <Button
             variant="ghost"
             size="sm"
