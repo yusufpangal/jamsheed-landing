@@ -1,13 +1,56 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Download, Zap, Clock, DollarSign } from 'lucide-react'
 import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
+import { User } from '@supabase/supabase-js'
 
 export default function DashboardPage() {
-  // Mock data (will be replaced with real Supabase data)
+  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Check authentication
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.push('/login')
+      } else {
+        setUser(session.user)
+        setLoading(false)
+      }
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        router.push('/login')
+      } else {
+        setUser(session.user)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [router])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Mock data (will be replaced with real Supabase data from licenses table)
   const subscription = {
     plan: 'Free',
     status: 'active',
@@ -20,28 +63,9 @@ export default function DashboardPage() {
 
   return (
     <div>
-      {/* Demo Mode Banner */}
-      <Card className="mb-6 p-4 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
-            <div>
-              <p className="font-semibold text-sm">Demo Mode</p>
-              <p className="text-xs text-muted-foreground">
-                This is a preview with sample data. Sign up to see your real usage stats.
-              </p>
-            </div>
-          </div>
-          <Link href="/pricing">
-            <Button size="sm" variant="default">
-              Create Account
-            </Button>
-          </Link>
-        </div>
-      </Card>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Welcome back!</h1>
+        <h1 className="text-3xl font-bold mb-2">Welcome back{user?.email ? `, ${user.email.split('@')[0]}` : ''}!</h1>
         <p className="text-muted-foreground">
           Here's an overview of your JamSheed AI usage
         </p>

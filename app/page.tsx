@@ -10,9 +10,7 @@ import {
   MessageSquare,
   Plug,
   Sparkles,
-  Volume2,
   Mail,
-  Calendar,
   Shield,
   Zap
 } from 'lucide-react'
@@ -23,33 +21,33 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 md:py-32 text-center">
         <Badge className="mb-6" variant="secondary">
-          ✨ Bilgisayarınızı sesli komutlarla kontrol edin
+          ✨ Control your computer with voice commands
         </Badge>
 
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-          Bilgisayarınızla Konuşun,
+          Talk to Your Computer,
           <br />
           <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            İşlerinizi Otomatikleştirin
+            Automate Your Work
           </span>
         </h1>
 
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
-          JamSheed AI ile bilgisayarınız akıllı bir asistana dönüşür.
-          Sesli komutlarla işlem yapın, rutin görevleri otomatikleştirin,
-          e-posta gönderin, rapor oluşturun—hepsi doğal dilde konuşarak.
+          JamSheed AI transforms your computer into an intelligent assistant.
+          Execute commands by voice, automate routine tasks,
+          send emails, generate reports—all by speaking naturally.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
           <Link href="/download">
             <Button size="lg" className="gap-2 w-full sm:w-auto">
-              Ücretsiz İndirin
+              Download Free
               <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
           <Link href="/pricing">
             <Button size="lg" variant="outline" className="w-full sm:w-auto">
-              Fiyatlandırma
+              Pricing
             </Button>
           </Link>
         </div>
@@ -58,15 +56,15 @@ export default function HomePage() {
         <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4" />
-            <span>Güvenli & Şifreli</span>
+            <span>Secure & Encrypted</span>
           </div>
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4" />
-            <span>Hızlı Yanıt</span>
+            <span>Fast Response</span>
           </div>
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4" />
-            <span>Akıllı Otomasyon</span>
+            <span>Smart Automation</span>
           </div>
         </div>
       </section>
@@ -75,59 +73,59 @@ export default function HomePage() {
       <section id="features" className="container mx-auto px-4 py-16 md:py-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Neler Yapabilirsiniz?
+            What Can You Do?
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            JamSheed AI ile günlük işlerinizi kolaylaştırın
+            Simplify your daily tasks with JamSheed AI
           </p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <Mic className="w-12 h-12 mb-4 text-blue-600" />
-            <h3 className="text-xl font-bold mb-2">Sesli Komut</h3>
+            <h3 className="text-xl font-bold mb-2">Voice Commands</h3>
             <p className="text-muted-foreground">
-              "Volume aç", "Spotify başlat", "Not al" - konuşarak bilgisayarınızı kontrol edin.
+              "Turn up volume", "Launch Spotify", "Take notes" - control your computer by speaking.
             </p>
           </Card>
 
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <Workflow className="w-12 h-12 mb-4 text-purple-600" />
-            <h3 className="text-xl font-bold mb-2">Otomasyon</h3>
+            <h3 className="text-xl font-bold mb-2">Automation</h3>
             <p className="text-muted-foreground">
-              Tekrar eden görevleri otomatikleştirin. Dosya organize et, backup al, script çalıştır.
+              Automate repetitive tasks. Organize files, backup data, run scripts automatically.
             </p>
           </Card>
 
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <Mail className="w-12 h-12 mb-4 text-green-600" />
-            <h3 className="text-xl font-bold mb-2">Email Yönetimi</h3>
+            <h3 className="text-xl font-bold mb-2">Email Management</h3>
             <p className="text-muted-foreground">
-              "Toplantı daveti gönder", "Faturaları kontrol et" - email'lerinizi AI ile yönetin.
+              "Send meeting invite", "Check invoices" - manage your emails with AI assistance.
             </p>
           </Card>
 
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <FileSpreadsheet className="w-12 h-12 mb-4 text-orange-600" />
-            <h3 className="text-xl font-bold mb-2">Rapor Oluştur</h3>
+            <h3 className="text-xl font-bold mb-2">Report Generation</h3>
             <p className="text-muted-foreground">
-              Excel tabloları, PDF raporlar, veri analizi - hepsini konuşarak yapın.
+              Create Excel spreadsheets, PDF reports, data analysis - all by speaking.
             </p>
           </Card>
 
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <Plug className="w-12 h-12 mb-4 text-red-600" />
-            <h3 className="text-xl font-bold mb-2">Entegrasyonlar</h3>
+            <h3 className="text-xl font-bold mb-2">Integrations</h3>
             <p className="text-muted-foreground">
-              Slack, Notion, Google Drive, Calendar - tüm araçlarınızla entegre çalışın.
+              Slack, Notion, Google Drive, Calendar - seamlessly integrate with all your tools.
             </p>
           </Card>
 
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <MessageSquare className="w-12 h-12 mb-4 text-indigo-600" />
-            <h3 className="text-xl font-bold mb-2">Akıllı Asistan</h3>
+            <h3 className="text-xl font-bold mb-2">Smart Assistant</h3>
             <p className="text-muted-foreground">
-              Toplantı notları al, hatırlatıcı kur, araştırma yap - her şey doğal dilde.
+              Take meeting notes, set reminders, do research - everything in natural language.
             </p>
           </Card>
         </div>
@@ -137,73 +135,73 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-16 md:py-24 bg-muted/30">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Kim Kullanabilir?
+            Who Can Use It?
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Herkes için tasarlandı
+            Designed for everyone
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="p-8">
             <div className="mb-4">
-              <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">İş Profesyonelleri</Badge>
+              <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Business Professionals</Badge>
             </div>
-            <h3 className="text-2xl font-bold mb-4">Verimliliği Artırın</h3>
+            <h3 className="text-2xl font-bold mb-4">Boost Productivity</h3>
             <ul className="space-y-3 text-muted-foreground">
               <li className="flex items-start gap-2">
                 <span className="text-green-600 mt-1">✓</span>
-                <span>Toplantı notlarını otomatik özetle</span>
+                <span>Auto-summarize meeting notes</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-600 mt-1">✓</span>
-                <span>Email'leri AI ile yanıtla</span>
+                <span>Reply to emails with AI</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-600 mt-1">✓</span>
-                <span>Rapor ve sunumları hızlıca hazırla</span>
+                <span>Prepare reports and presentations quickly</span>
               </li>
             </ul>
           </Card>
 
           <Card className="p-8 border-2 border-blue-600">
             <div className="mb-4">
-              <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Geliştiriciler</Badge>
+              <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Developers</Badge>
             </div>
-            <h3 className="text-2xl font-bold mb-4">Kodlamayı Hızlandırın</h3>
+            <h3 className="text-2xl font-bold mb-4">Accelerate Coding</h3>
             <ul className="space-y-3 text-muted-foreground">
               <li className="flex items-start gap-2">
                 <span className="text-green-600 mt-1">✓</span>
-                <span>Script ve kod yazdırın</span>
+                <span>Generate scripts and code</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-600 mt-1">✓</span>
-                <span>Terminal komutlarını otomatikleştirin</span>
+                <span>Automate terminal commands</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-600 mt-1">✓</span>
-                <span>Dosya analizleri yapın</span>
+                <span>Analyze files and data</span>
               </li>
             </ul>
           </Card>
 
           <Card className="p-8">
             <div className="mb-4">
-              <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Öğrenciler</Badge>
+              <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Students</Badge>
             </div>
-            <h3 className="text-2xl font-bold mb-4">Öğrenmeyi Kolaylaştırın</h3>
+            <h3 className="text-2xl font-bold mb-4">Simplify Learning</h3>
             <ul className="space-y-3 text-muted-foreground">
               <li className="flex items-start gap-2">
                 <span className="text-green-600 mt-1">✓</span>
-                <span>Araştırma ve kaynak bulun</span>
+                <span>Research and find resources</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-600 mt-1">✓</span>
-                <span>Ödev ve proje yapın</span>
+                <span>Complete homework and projects</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-600 mt-1">✓</span>
-                <span>Notları organize edin</span>
+                <span>Organize notes efficiently</span>
               </li>
             </ul>
           </Card>
@@ -214,10 +212,10 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-16 md:py-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Nasıl Çalışır?
+            How Does It Work?
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            3 adımda başlayın
+            Get started in 3 simple steps
           </p>
         </div>
 
@@ -226,9 +224,9 @@ export default function HomePage() {
             <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
               1
             </div>
-            <h3 className="text-xl font-bold mb-3">İndirin & Kurun</h3>
+            <h3 className="text-xl font-bold mb-3">Download & Install</h3>
             <p className="text-muted-foreground">
-              macOS, Windows veya Linux için ücretsiz indirin. Kurulum 1 dakika sürer.
+              Download free for macOS, Windows, or Linux. Installation takes just 1 minute.
             </p>
           </div>
 
@@ -236,9 +234,9 @@ export default function HomePage() {
             <div className="w-16 h-16 bg-purple-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
               2
             </div>
-            <h3 className="text-xl font-bold mb-3">Lisansınızı Aktive Edin</h3>
+            <h3 className="text-xl font-bold mb-3">Activate Your License</h3>
             <p className="text-muted-foreground">
-              Ücretsiz hesap oluşturun, lisans key'inizi girin ve kullanmaya başlayın.
+              Create a free account, enter your license key, and start using right away.
             </p>
           </div>
 
@@ -246,9 +244,9 @@ export default function HomePage() {
             <div className="w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
               3
             </div>
-            <h3 className="text-xl font-bold mb-3">Konuşmaya Başlayın</h3>
+            <h3 className="text-xl font-bold mb-3">Start Talking</h3>
             <p className="text-muted-foreground">
-              Sesli veya yazılı komutlarla bilgisayarınızı kontrol edin. Bu kadar basit!
+              Control your computer with voice or text commands. It's that simple!
             </p>
           </div>
         </div>
@@ -258,21 +256,21 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-16 md:py-24 text-center">
         <div className="max-w-3xl mx-auto bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 md:p-12 text-white">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            Verimliliğinizi Artırmaya Hazır mısınız?
+            Ready to Boost Your Productivity?
           </h2>
           <p className="text-lg md:text-xl mb-8 opacity-90">
-            Binlerce kullanıcı zaten zamanlarını JamSheed AI ile kazanıyor
+            Thousands of users are already saving time with JamSheed AI
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/download">
               <Button size="lg" variant="secondary" className="gap-2 w-full sm:w-auto">
-                Ücretsiz İndirin
+                Download Free
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
             <Link href="/pricing">
               <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 border-white/30 text-white w-full sm:w-auto">
-                Planları İncele
+                View Plans
               </Button>
             </Link>
           </div>
