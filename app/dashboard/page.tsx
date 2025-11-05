@@ -10,21 +10,51 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 
+interface LicenseData {
+  license_key: string
+  user_email: string
+  tier: string
+  status: string
+  tokens_used: number
+  tokens_limit: number
+  period_end: string
+}
+
 export default function DashboardPage() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [licenseData, setLicenseData] = useState<LicenseData | null>(null)
 
   useEffect(() => {
-    // Check authentication
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Check authentication and load license data
+    const loadData = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+
       if (!session) {
         router.push('/login')
-      } else {
-        setUser(session.user)
-        setLoading(false)
+        return
       }
-    })
+
+      setUser(session.user)
+
+      // Fetch license data from Supabase
+      const { data: license, error } = await supabase
+        .from('licenses')
+        .select('license_key, user_email, tier, status, tokens_used, tokens_limit, period_end')
+        .eq('user_email', session.user.email)
+        .single()
+
+      if (license) {
+        setLicenseData(license)
+      } else if (error) {
+        console.error('Error fetching license:', error)
+      }
+
+      setLoading(false)
+    }
+
+    loadData()
 
     const {
       data: { subscription },
@@ -50,13 +80,23 @@ export default function DashboardPage() {
     )
   }
 
-  // Mock data (will be replaced with real Supabase data from licenses table)
-  const subscription = {
+  // Use real data if available, otherwise show default free tier
+  const subscription = licenseData ? {
+    plan: licenseData.tier.charAt(0).toUpperCase() + licenseData.tier.slice(1),
+    status: licenseData.status,
+    tokensUsed: licenseData.tokens_used || 0,
+    tokensLimit: licenseData.tokens_limit || 50000,
+    periodEnd: new Date(licenseData.period_end).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    }),
+  } : {
     plan: 'Free',
-    status: 'active',
-    tokensUsed: 12450,
+    status: 'inactive',
+    tokensUsed: 0,
     tokensLimit: 50000,
-    periodEnd: '2025-12-05',
+    periodEnd: 'Not activated',
   }
 
   const usagePercentage = (subscription.tokensUsed / subscription.tokensLimit) * 100
@@ -102,8 +142,7 @@ export default function DashboardPage() {
             <span className="text-sm text-muted-foreground">Period Ends</span>
             <Clock className="w-4 h-4 text-orange-600" />
           </div>
-          <div className="text-2xl font-bold">Dec 5</div>
-          <p className="text-xs text-muted-foreground mt-1">2025</p>
+          <div className="text-xl font-bold">{subscription.periodEnd}</div>
         </Card>
 
         <Card className="p-6">

@@ -1,27 +1,91 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Copy, Check, Key, Laptop } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
+
+interface LicenseData {
+  license_key: string
+  status: string
+  device_name: string | null
+  created_at: string
+}
 
 export default function LicenseKeyPage() {
+  const router = useRouter()
   const [copied, setCopied] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [license, setLicense] = useState<LicenseData | null>(null)
 
-  // Mock data (will be replaced with real Supabase data)
-  const license = {
-    key: 'JMSD-REAL-MAC-2024-TEST',
-    status: 'active',
-    deviceName: 'Yusufs-MacBook-Pro.local',
-    activatedAt: '2024-11-05',
+  useEffect(() => {
+    const loadLicense = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+
+      if (!session) {
+        router.push('/login')
+        return
+      }
+
+      // Fetch license data
+      const { data, error } = await supabase
+        .from('licenses')
+        .select('license_key, status, device_name, created_at')
+        .eq('user_email', session.user.email)
+        .single()
+
+      if (data) {
+        setLicense(data)
+      } else if (error) {
+        console.error('Error fetching license:', error)
+      }
+
+      setLoading(false)
+    }
+
+    loadLicense()
+  }, [router])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading license...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!license) {
+    return (
+      <div className="max-w-3xl">
+        <Card className="p-8 text-center">
+          <Key className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">No License Found</h2>
+          <p className="text-muted-foreground mb-6">
+            You don't have an active license yet. Choose a plan to get started.
+          </p>
+          <Button onClick={() => router.push('/pricing')}>View Pricing</Button>
+        </Card>
+      </div>
+    )
   }
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(license.key)
+    navigator.clipboard.writeText(license.license_key)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
+
+  const activatedDate = new Date(license.created_at).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
 
   return (
     <div className="max-w-3xl">
@@ -45,7 +109,7 @@ export default function LicenseKeyPage() {
         </div>
 
         <div className="bg-muted p-4 rounded-lg flex items-center justify-between mb-4">
-          <code className="text-lg font-mono">{license.key}</code>
+          <code className="text-lg font-mono">{license.license_key}</code>
           <Button
             variant="ghost"
             size="sm"
@@ -71,24 +135,23 @@ export default function LicenseKeyPage() {
             {license.status}
           </Badge>
           <span className="text-sm text-muted-foreground">
-            Activated on {license.activatedAt}
+            Activated on {activatedDate}
           </span>
         </div>
       </Card>
 
       {/* Device Info */}
-      <Card className="p-6 mb-6">
-        <div className="flex items-center gap-3 mb-4">
-          <Laptop className="w-5 h-5 text-muted-foreground" />
-          <h3 className="font-semibold">Activated Device</h3>
-        </div>
-        <div className="bg-muted p-4 rounded-lg">
-          <p className="font-mono text-sm">{license.deviceName}</p>
-          <p className="text-xs text-muted-foreground mt-1">
-            darwin-arm64 (Apple Silicon)
-          </p>
-        </div>
-      </Card>
+      {license.device_name && (
+        <Card className="p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <Laptop className="w-5 h-5 text-muted-foreground" />
+            <h3 className="font-semibold">Activated Device</h3>
+          </div>
+          <div className="bg-muted p-4 rounded-lg">
+            <p className="font-mono text-sm">{license.device_name}</p>
+          </div>
+        </Card>
+      )}
 
       {/* How to Activate */}
       <Card className="p-6 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
