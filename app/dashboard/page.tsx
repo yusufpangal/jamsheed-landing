@@ -91,18 +91,16 @@ export default function DashboardPage() {
       }
 
       // Fetch usage statistics from usage_logs
-      // Get current billing period dates
-      const periodStart = subscription?.current_period_start
-        ? new Date(subscription.current_period_start).toISOString()
-        : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString() // Last 30 days fallback
+      // Always use 30 days lookback to match usage page behavior
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
       const { data: usageLogs, error: usageError } = await supabase
         .from('usage_logs')
         .select('input_tokens, output_tokens, cost')
         .eq('user_id', session.user.id)
-        .gte('created_at', periodStart)
+        .gte('created_at', thirtyDaysAgo)
 
-      console.log('Usage logs query result:', { usageLogs, usageError, periodStart, userId: session.user.id })
+      console.log('Usage logs query result:', { usageLogs, usageError, thirtyDaysAgo, userId: session.user.id })
 
       if (usageLogs && usageLogs.length > 0) {
         const totalTokens = usageLogs.reduce((sum, log) =>
