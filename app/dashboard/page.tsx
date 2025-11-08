@@ -102,14 +102,19 @@ export default function DashboardPage() {
         .eq('user_id', session.user.id)
         .gte('created_at', periodStart)
 
+      console.log('Usage logs query result:', { usageLogs, usageError, periodStart, userId: session.user.id })
+
       if (usageLogs && usageLogs.length > 0) {
         const totalTokens = usageLogs.reduce((sum, log) =>
           sum + (log.input_tokens || 0) + (log.output_tokens || 0), 0
         )
         const totalCost = usageLogs.reduce((sum, log) => sum + (log.cost || 0), 0)
+        console.log('Calculated usage stats:', { totalTokens, totalCost })
         setUsageStats({ totalTokens, totalCost })
       } else if (usageError) {
         console.log('No usage logs found:', usageError)
+      } else {
+        console.log('No usage logs in database for this period')
       }
 
       setLoading(false)
