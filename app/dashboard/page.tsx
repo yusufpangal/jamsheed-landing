@@ -98,12 +98,14 @@ export default function DashboardPage() {
 
       const { data: usageLogs, error: usageError } = await supabase
         .from('usage_logs')
-        .select('tokens_used, cost')
+        .select('input_tokens, output_tokens, cost')
         .eq('user_id', session.user.id)
         .gte('created_at', periodStart)
 
       if (usageLogs && usageLogs.length > 0) {
-        const totalTokens = usageLogs.reduce((sum, log) => sum + (log.tokens_used || 0), 0)
+        const totalTokens = usageLogs.reduce((sum, log) =>
+          sum + (log.input_tokens || 0) + (log.output_tokens || 0), 0
+        )
         const totalCost = usageLogs.reduce((sum, log) => sum + (log.cost || 0), 0)
         setUsageStats({ totalTokens, totalCost })
       } else if (usageError) {
