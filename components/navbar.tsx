@@ -53,6 +53,9 @@ export function Navbar() {
           <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition">
             Pricing
           </Link>
+          <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition">
+            Blog
+          </Link>
           <Link href="/download" className="text-sm text-muted-foreground hover:text-foreground transition">
             Download
           </Link>

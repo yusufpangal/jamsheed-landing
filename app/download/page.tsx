@@ -1,7 +1,9 @@
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Download, Apple, Monitor, CheckCircle2 } from 'lucide-react'
+import { Download, Apple, Monitor, CheckCircle2, ExternalLink } from 'lucide-react'
+import { DOWNLOAD_CONFIG } from '@/lib/download-config'
 
 export default function DownloadPage() {
   return (
@@ -9,7 +11,7 @@ export default function DownloadPage() {
       {/* Header */}
       <div className="text-center mb-16">
         <Badge className="mb-4" variant="secondary">
-          Latest Version: v2.0.0
+          Latest Version: {DOWNLOAD_CONFIG.version}
         </Badge>
         <h1 className="text-5xl md:text-6xl font-bold mb-4">
           Download JamSheed AI
@@ -19,42 +21,71 @@ export default function DownloadPage() {
         </p>
       </div>
 
+      {/* Alternative Download Link */}
+      <div className="text-center mb-8">
+        <Link href={DOWNLOAD_CONFIG.releasesPageUrl} target="_blank" rel="noopener noreferrer">
+          <Button variant="link" className="gap-2">
+            <ExternalLink className="w-4 h-4" />
+            View all releases on GitHub
+          </Button>
+        </Link>
+      </div>
+
       {/* Download Cards */}
       <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
         {/* macOS */}
-        <Card className="p-8 text-center hover:border-blue-600 transition-all cursor-pointer">
-          <Apple className="w-16 h-16 mx-auto mb-4 text-gray-800" />
+        <Card className="p-8 text-center hover:border-blue-600 transition-all">
+          <Apple className="w-16 h-16 mx-auto mb-4 text-gray-800 dark:text-gray-200" />
           <h3 className="text-2xl font-bold mb-2">macOS</h3>
           <p className="text-sm text-muted-foreground mb-6">
             Universal (Intel & Apple Silicon)
           </p>
-          <Button className="w-full gap-2" size="lg">
-            <Download className="w-4 h-4" />
-            Download for Mac
-          </Button>
+          <div className="space-y-2">
+            <a href={DOWNLOAD_CONFIG.downloads.macos.dmg} download>
+              <Button className="w-full gap-2" size="lg">
+                <Download className="w-4 h-4" />
+                Download DMG
+              </Button>
+            </a>
+            <a href={DOWNLOAD_CONFIG.downloads.macos.zip} download>
+              <Button className="w-full gap-2" size="sm" variant="outline">
+                <Download className="w-4 h-4" />
+                Download ZIP
+              </Button>
+            </a>
+          </div>
           <p className="text-xs text-muted-foreground mt-3">
-            macOS 11.0+ (Big Sur or later)
+            {DOWNLOAD_CONFIG.downloads.macos.requirements}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {DOWNLOAD_CONFIG.downloads.macos.size}
           </p>
         </Card>
 
         {/* Windows */}
-        <Card className="p-8 text-center hover:border-blue-600 transition-all cursor-pointer border-blue-600 border-2">
+        <Card className="p-8 text-center hover:border-blue-600 transition-all border-blue-600 border-2">
           <Monitor className="w-16 h-16 mx-auto mb-4 text-blue-600" />
           <h3 className="text-2xl font-bold mb-2">Windows</h3>
+          <Badge className="mb-4" variant="default">Most Popular</Badge>
           <p className="text-sm text-muted-foreground mb-6">
             64-bit installer
           </p>
-          <Button className="w-full gap-2" size="lg">
-            <Download className="w-4 h-4" />
-            Download for Windows
-          </Button>
+          <a href={DOWNLOAD_CONFIG.downloads.windows.exe} download>
+            <Button className="w-full gap-2" size="lg">
+              <Download className="w-4 h-4" />
+              Download for Windows
+            </Button>
+          </a>
           <p className="text-xs text-muted-foreground mt-3">
-            Windows 10/11 (x64)
+            {DOWNLOAD_CONFIG.downloads.windows.requirements}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {DOWNLOAD_CONFIG.downloads.windows.size}
           </p>
         </Card>
 
         {/* Linux */}
-        <Card className="p-8 text-center hover:border-blue-600 transition-all cursor-pointer">
+        <Card className="p-8 text-center hover:border-blue-600 transition-all">
           <svg
             className="w-16 h-16 mx-auto mb-4"
             viewBox="0 0 24 24"
@@ -66,12 +97,31 @@ export default function DownloadPage() {
           <p className="text-sm text-muted-foreground mb-6">
             AppImage / deb / rpm
           </p>
-          <Button className="w-full gap-2" size="lg" variant="outline">
-            <Download className="w-4 h-4" />
-            Download for Linux
-          </Button>
+          <div className="space-y-2">
+            <a href={DOWNLOAD_CONFIG.downloads.linux.appimage} download>
+              <Button className="w-full gap-2" size="lg" variant="outline">
+                <Download className="w-4 h-4" />
+                AppImage
+              </Button>
+            </a>
+            <div className="grid grid-cols-2 gap-2">
+              <a href={DOWNLOAD_CONFIG.downloads.linux.deb} download>
+                <Button className="w-full gap-2" size="sm" variant="ghost">
+                  .deb
+                </Button>
+              </a>
+              <a href={DOWNLOAD_CONFIG.downloads.linux.rpm} download>
+                <Button className="w-full gap-2" size="sm" variant="ghost">
+                  .rpm
+                </Button>
+              </a>
+            </div>
+          </div>
           <p className="text-xs text-muted-foreground mt-3">
-            Ubuntu 20.04+ / Fedora 35+
+            {DOWNLOAD_CONFIG.downloads.linux.requirements}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {DOWNLOAD_CONFIG.downloads.linux.size}
           </p>
         </Card>
       </div>

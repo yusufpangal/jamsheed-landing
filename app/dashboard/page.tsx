@@ -27,6 +27,11 @@ interface PlanFeatures {
   models: string[]
 }
 
+interface UsageStats {
+  totalTokens: number
+  totalCost: number
+}
+
 export default function DashboardPage() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
@@ -34,6 +39,8 @@ export default function DashboardPage() {
   const [licenseData, setLicenseData] = useState<LicenseData | null>(null)
   const [subscriptionData, setSubscriptionData] = useState<SubscriptionData | null>(null)
   const [planName, setPlanName] = useState('Free')
+  const [usageStats, setUsageStats] = useState<UsageStats>({ totalTokens: 0, totalCost: 0 })
+  const [planFeatures, setPlanFeatures] = useState<PlanFeatures>({ maxTokens: 50000, models: ['gemini-2.5-flash'] })
 
   useEffect(() => {
     // Check authentication and load license data
@@ -63,7 +70,7 @@ export default function DashboardPage() {
       // Fetch subscription data
       const { data: subscription, error: subError } = await supabase
         .from('subscriptions')
-        .select('plan_id, status, current_period_end, pricing_plans(name, features)')
+        .select('plan_id, status, current_period_start, current_period_end, pricing_plans(name, features)')
         .eq('user_id', session.user.id)
         .single()
 
@@ -71,8 +78,36 @@ export default function DashboardPage() {
         setSubscriptionData(subscription)
         // @ts-ignore - Supabase nested select
         setPlanName(subscription.pricing_plans?.name || 'Free')
+        // @ts-ignore - Supabase nested select
+        const features = subscription.pricing_plans?.features
+        if (features) {
+          setPlanFeatures({
+            maxTokens: features.maxTokens || 50000,
+            models: features.models || ['gemini-2.5-flash']
+          })
+        }
       } else if (subError) {
         console.log('No subscription found:', subError)
+      }
+
+      // Fetch usage statistics from usage_logs
+      // Get current billing period dates
+      const periodStart = subscription?.current_period_start
+        ? new Date(subscription.current_period_start).toISOString()
+        : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString() // Last 30 days fallback
+
+      const { data: usageLogs, error: usageError } = await supabase
+        .from('usage_logs')
+        .select('tokens_used, cost')
+        .eq('user_id', session.user.id)
+        .gte('created_at', periodStart)
+
+      if (usageLogs && usageLogs.length > 0) {
+        const totalTokens = usageLogs.reduce((sum, log) => sum + (log.tokens_used || 0), 0)
+        const totalCost = usageLogs.reduce((sum, log) => sum + (log.cost || 0), 0)
+        setUsageStats({ totalTokens, totalCost })
+      } else if (usageError) {
+        console.log('No usage logs found:', usageError)
       }
 
       setLoading(false)
@@ -108,8 +143,9 @@ export default function DashboardPage() {
   const subscription = subscriptionData ? {
     plan: planName,
     status: subscriptionData.status,
-    tokensUsed: 0, // TODO: Get from usage_logs aggregation
-    tokensLimit: 50000, // TODO: Get from plan features
+    tokensUsed: usageStats.totalTokens,
+    tokensLimit: planFeatures.maxTokens,
+    totalCost: usageStats.totalCost,
     periodEnd: new Date(subscriptionData.current_period_end).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -118,12 +154,15 @@ export default function DashboardPage() {
   } : {
     plan: 'Free',
     status: licenseData?.status || 'inactive',
-    tokensUsed: 0,
+    tokensUsed: usageStats.totalTokens,
     tokensLimit: 50000,
+    totalCost: usageStats.totalCost,
     periodEnd: 'Not activated',
   }
 
-  const usagePercentage = (subscription.tokensUsed / subscription.tokensLimit) * 100
+  // Handle unlimited plans (maxTokens = -1 or very high number)
+  const isUnlimited = subscription.tokensLimit === -1 || subscription.tokensLimit >= 999999999
+  const usagePercentage = isUnlimited ? 0 : (subscription.tokensUsed / subscription.tokensLimit) * 100
 
   return (
     <div>
@@ -157,7 +196,7 @@ export default function DashboardPage() {
             {subscription.tokensUsed.toLocaleString()}
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            of {subscription.tokensLimit.toLocaleString()}
+            {isUnlimited ? 'Unlimited' : `of ${subscription.tokensLimit.toLocaleString()}`}
           </p>
         </Card>
 
@@ -174,8 +213,8 @@ export default function DashboardPage() {
             <span className="text-sm text-muted-foreground">Total Cost</span>
             <DollarSign className="w-4 h-4 text-purple-600" />
           </div>
-          <div className="text-2xl font-bold">$0.00</div>
-          <p className="text-xs text-muted-foreground mt-1">this month</p>
+          <div className="text-2xl font-bold">${subscription.totalCost.toFixed(2)}</div>
+          <p className="text-xs text-muted-foreground mt-1">this period</p>
         </Card>
       </div>
 
@@ -185,27 +224,44 @@ export default function DashboardPage() {
           <div>
             <h3 className="font-semibold">Token Usage</h3>
             <p className="text-sm text-muted-foreground">
-              {usagePercentage.toFixed(1)}% of monthly quota
+              {isUnlimited
+                ? `${subscription.tokensUsed.toLocaleString()} tokens used this period`
+                : `${usagePercentage.toFixed(1)}% of monthly quota`
+              }
             </p>
           </div>
-          <Link href="/pricing">
-            <Button variant="outline" size="sm">
-              Upgrade Plan
-            </Button>
-          </Link>
+          {!isUnlimited && subscription.plan === 'Free' && (
+            <Link href="/pricing">
+              <Button variant="outline" size="sm">
+                Upgrade Plan
+              </Button>
+            </Link>
+          )}
         </div>
-        <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
-          <div
-            className={`h-full ${
-              usagePercentage > 80 ? 'bg-red-600' : 'bg-blue-600'
-            }`}
-            style={{ width: `${usagePercentage}%` }}
-          />
-        </div>
-        <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-          <span>0</span>
-          <span>{subscription.tokensLimit.toLocaleString()} tokens</span>
-        </div>
+        {!isUnlimited && (
+          <>
+            <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+              <div
+                className={`h-full ${
+                  usagePercentage > 80 ? 'bg-red-600' : 'bg-blue-600'
+                }`}
+                style={{ width: `${usagePercentage}%` }}
+              />
+            </div>
+            <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+              <span>0</span>
+              <span>{subscription.tokensLimit.toLocaleString()} tokens</span>
+            </div>
+          </>
+        )}
+        {isUnlimited && (
+          <div className="text-center py-4">
+            <Badge variant="secondary" className="text-sm">
+              <Zap className="w-3 h-3 mr-1" />
+              Unlimited Usage
+            </Badge>
+          </div>
+        )}
       </Card>
 
       {/* Quick Actions */}

@@ -53,7 +53,7 @@ export default function HomePage() {
         </div>
 
         {/* Trust Indicators */}
-        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 text-sm text-muted-foreground mb-16">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4" />
             <span>Secure & Encrypted</span>
@@ -65,6 +65,19 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4" />
             <span>Smart Automation</span>
+          </div>
+        </div>
+
+        {/* Demo Video Placeholder */}
+        <div className="max-w-5xl mx-auto">
+          <div className="aspect-video w-full bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-950 dark:to-purple-950 rounded-2xl shadow-2xl border-8 border-white dark:border-gray-800 flex items-center justify-center group cursor-pointer hover:scale-[1.02] transition-transform">
+            <div className="text-center">
+              <div className="w-20 h-20 mx-auto mb-4 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                <div className="w-0 h-0 border-t-[12px] border-t-transparent border-l-[20px] border-l-blue-600 border-b-[12px] border-b-transparent ml-1"></div>
+              </div>
+              <p className="text-lg font-semibold text-muted-foreground">Watch Demo Video</p>
+              <p className="text-sm text-muted-foreground mt-1">See JamSheed AI in action (2:30)</p>
+            </div>
           </div>
         </div>
       </section>
@@ -126,6 +139,62 @@ export default function HomePage() {
             <h3 className="text-xl font-bold mb-2">Smart Assistant</h3>
             <p className="text-muted-foreground">
               Take meeting notes, set reminders, do research - everything in natural language.
+            </p>
+          </Card>
+        </div>
+      </section>
+
+      {/* Why JamSheed AI Section */}
+      <section className="container mx-auto px-4 py-16 md:py-24 bg-gradient-to-b from-background to-muted/30">
+        <div className="max-w-4xl mx-auto text-center mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+            Why JamSheed AI?
+          </h2>
+          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+            Unlike web-based AI tools that require constant copy-pasting and tab-switching,
+            JamSheed AI lives right on your desktop. Talk to it, and watch it work -
+            from drafting emails to analyzing documents, everything happens instantly without leaving your workflow.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <Card className="p-6 text-center">
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mic className="w-6 h-6 text-blue-600" />
+            </div>
+            <h3 className="font-bold mb-2">Voice-First</h3>
+            <p className="text-sm text-muted-foreground">
+              Just speak naturally. No typing long prompts or navigating complex UIs.
+            </p>
+          </Card>
+
+          <Card className="p-6 text-center">
+            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Shield className="w-6 h-6 text-purple-600" />
+            </div>
+            <h3 className="font-bold mb-2">Privacy-First</h3>
+            <p className="text-sm text-muted-foreground">
+              All conversations stay on your device. We never track or sell your data.
+            </p>
+          </Card>
+
+          <Card className="p-6 text-center">
+            <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Zap className="w-6 h-6 text-green-600" />
+            </div>
+            <h3 className="font-bold mb-2">Lightning Fast</h3>
+            <p className="text-sm text-muted-foreground">
+              Native desktop app means instant responses, no browser lag.
+            </p>
+          </Card>
+
+          <Card className="p-6 text-center">
+            <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-6 h-6 text-orange-600" />
+            </div>
+            <h3 className="font-bold mb-2">Best AI Models</h3>
+            <p className="text-sm text-muted-foreground">
+              Access Claude, GPT-4o, and Gemini - all from one interface.
             </p>
           </Card>
         </div>
